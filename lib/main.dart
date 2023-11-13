@@ -1,7 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:twangou/initialize%20users/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
+}
+void sendMessage() async {
+  print('connecting');
+  Socket socket = await Socket.connect('192.168.1.240', 8080);
+  print('connected');
+  // listen to the received data event stream
+
+  socket.listen((List<int> event) {
+    print(utf8.decode(event));
+  });
+  // send hello
+  socket.add(utf8.encode('hello'));
+  // wait 5 seconds
+  await Future.delayed(Duration(seconds: 5));
+
+  // .. and close the socket
+  socket.close();
 }
 
 class MyApp extends StatelessWidget {
@@ -31,7 +52,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const SplashScreen(),
     );
   }
 }
@@ -116,7 +137,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          sendMessage();
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
