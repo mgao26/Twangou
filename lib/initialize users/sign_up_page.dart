@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:twangou/SocketUtil.dart';
+import 'package:twangou/main_feed_page.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -14,10 +16,20 @@ class SignUpScreenState extends State<SignUpScreen>
   late TextEditingController passwordData;
   late double height;
   late double width;
+  SocketUtil socketutil = SocketUtil();
+  final _formKey = GlobalKey<FormState>();
+  bool userNameValidator = false;
+  String userNameError = '';
+  bool passwordValidator = false;
+  String passwordError = '';
 
   @override
   void initState() {
     super.initState();
+    userNameValidator = false;
+    userNameError = '';
+    passwordValidator = false;
+    passwordError = '';
     userNameData = TextEditingController();
     passwordData = TextEditingController();
   }
@@ -74,12 +86,45 @@ class SignUpScreenState extends State<SignUpScreen>
             padding: EdgeInsets.symmetric(horizontal: width / 20),
             child: TextField(
               controller: userNameData,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration:  InputDecoration(
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: userNameError != '' ? Colors.red : Colors.grey)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: userNameError != '' ? Colors.red : Colors.grey),
+                ),
                 hintText: 'Username',
               ),
+              onChanged: (value) {
+                // You can perform validation here
+                // For example, check for the presence of a number
+                bool hasSpecialCharacter = value.contains('|');
+                bool hasSpace = value.contains(' ');
+                bool isLongEnough = value.length >= 8;
+                if (hasSpecialCharacter) {
+                  // Show error or handle accordingly
+                  userNameError = 'Username cannot contain the | character';
+                  userNameValidator = false;
+                } else if (hasSpace) {
+                  userNameError = 'Username cannot have spaces';
+                  userNameValidator = false;
+                } else if (!isLongEnough) {
+                  userNameError = 'Username must be at least 8 characters';
+                  userNameValidator = false;
+                } else {
+                  userNameError = '';
+                  userNameValidator = true;
+                }
+              },
             ),
           ),
+          userNameError != '' ?
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width / 20),
+            child: Text(userNameError,
+                style: TextStyle(
+                    color: Colors.red),
+                textAlign: TextAlign.start),
+          ) :
+          SizedBox(),
           SizedBox(
             height: height / 40,
           ),
@@ -98,13 +143,51 @@ class SignUpScreenState extends State<SignUpScreen>
           Padding(
             padding: EdgeInsets.symmetric(horizontal: width / 20),
             child: TextField(
+              obscureText: true,
               controller: passwordData,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration:  InputDecoration(
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: passwordError != '' ? Colors.red : Colors.grey)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: passwordError != '' ? Colors.red : Colors.grey),
+                ),
                 hintText: 'Password',
               ),
+              onChanged: (value) {
+                // You can perform validation here
+                // For example, check for the presence of a number
+                bool hasNumber = value.contains(RegExp(r'\d'));
+                bool hasSpecialCharacter = value.contains('|');
+                bool hasSpace = value.contains(' ');
+                bool isLongEnough = value.length >= 8;
+                if (hasSpecialCharacter) {
+                  // Show error or handle accordingly
+                  passwordError = 'Password cannot contain the | character';
+                  passwordValidator = false;
+                } else if (hasSpace) {
+                  passwordError = 'Password cannot have spaces';
+                  passwordValidator = false;
+                } else if (!isLongEnough) {
+                  passwordError = 'Password must be at least 8 characters';
+                  passwordValidator = false;
+                } else if (!hasNumber) {
+                  passwordError = 'Password must contain a number';
+                  passwordValidator = false;
+                } else {
+                  passwordError = '';
+                  passwordValidator = true;
+                }
+              },
             ),
           ),
+          passwordError != '' ?
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width / 20),
+            child: Text(passwordError,
+                style: TextStyle(
+                    color: Colors.red),
+                textAlign: TextAlign.start),
+          ) :
+          SizedBox(),
           SizedBox(height: height / 20),
           Align(
             alignment: Alignment.center,
@@ -112,7 +195,21 @@ class SignUpScreenState extends State<SignUpScreen>
                 color: Colors.red,
                 width: width * (7 / 8),
                 child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      setState(() {
+
+                      });
+                      if (userNameValidator && passwordValidator) {
+                        String message = 'SignUp|${userNameData.text}|${passwordData.text}';
+                        String response = await socketutil.sendMessage(message);
+                        if (response == 'Unavailable') {
+                          userNameError = 'Username is taken.';
+                          setState(() {});
+                        } else {
+                          userNameError = '';
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MainFeedPage()));
+                        }
+                      }
                       /*Navigator.push(
                           context,
                           MaterialPageRoute(

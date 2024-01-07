@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:twangou/SocketUtil.dart';
+
+import '../main_feed_page.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -14,10 +19,13 @@ class SignInScreenState extends State<SignInScreen>
   late TextEditingController passwordData;
   late double height;
   late double width;
+  SocketUtil socketUtil = SocketUtil();
+  String credentialsError = '';
 
   @override
   void initState() {
     super.initState();
+    credentialsError = '';
     userNameData = TextEditingController();
     passwordData = TextEditingController();
   }
@@ -74,9 +82,12 @@ class SignInScreenState extends State<SignInScreen>
             padding: EdgeInsets.symmetric(horizontal: width / 20),
             child: TextField(
               controller: userNameData,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Username',
+              decoration:  InputDecoration(
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: credentialsError != '' ? Colors.red : Colors.grey)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: credentialsError != '' ? Colors.red : Colors.grey),
+                ),
+                hintText: 'Password',
               ),
             ),
           ),
@@ -98,13 +109,26 @@ class SignInScreenState extends State<SignInScreen>
           Padding(
             padding: EdgeInsets.symmetric(horizontal: width / 20),
             child: TextField(
+              obscureText: true,
               controller: passwordData,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration:  InputDecoration(
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: credentialsError != '' ? Colors.red : Colors.grey)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: credentialsError != '' ? Colors.red : Colors.grey),
+                ),
                 hintText: 'Password',
               ),
             ),
           ),
+          credentialsError != '' ?
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width / 20),
+            child: Text(credentialsError,
+                style: TextStyle(
+                    color: Colors.red),
+                textAlign: TextAlign.start),
+          ) :
+          SizedBox(),
           SizedBox(height: height / 20),
           Align(
             alignment: Alignment.center,
@@ -112,7 +136,18 @@ class SignInScreenState extends State<SignInScreen>
                 color: Colors.red,
                 width: width * (7 / 8),
                 child: TextButton(
-                    onPressed: () {
+                    onPressed: () async{
+                      String message = 'SignIn|${userNameData.text}|${passwordData.text}';
+                      String response = await socketUtil.sendMessage(message);
+
+                      if (response == 'Incorrect') {
+                        credentialsError = 'Invalid username or password.';
+                        setState(() {});
+                      } else {
+                        credentialsError = '';
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MainFeedPage()));
+                      }
+
                       /*Navigator.push(
                           context,
                           MaterialPageRoute(
