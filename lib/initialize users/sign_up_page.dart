@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:twangou/SocketUtil.dart';
-import 'package:twangou/main_feed_page.dart';
+import 'package:twangou/util%20classes/SocketUtil.dart';
+import 'package:twangou/main%20pages/NavigationBarPage.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -207,7 +207,7 @@ class SignUpScreenState extends State<SignUpScreen>
                           setState(() {});
                         } else {
                           userNameError = '';
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MainFeedPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
                         }
                       }
                       /*Navigator.push(

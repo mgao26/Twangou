@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:twangou/SocketUtil.dart';
+import 'package:twangou/util%20classes/SocketUtil.dart';
 
-import '../main_feed_page.dart';
+import '../main pages/NavigationBarPage.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -87,7 +87,7 @@ class SignInScreenState extends State<SignInScreen>
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: credentialsError != '' ? Colors.red : Colors.grey),
                 ),
-                hintText: 'Password',
+                hintText: 'Username',
               ),
             ),
           ),
@@ -145,7 +145,7 @@ class SignInScreenState extends State<SignInScreen>
                         setState(() {});
                       } else {
                         credentialsError = '';
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MainFeedPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
                       }
 
                       /*Navigator.push(

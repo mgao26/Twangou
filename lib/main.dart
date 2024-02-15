@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:twangou/initialize%20users/splash_screen.dart';
 
+late double height;
+late double width;
+late double widget_spacing;
+
 void main() {
   runApp(const MyApp());
 }
@@ -31,6 +35,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+    widget_spacing = height/40;
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

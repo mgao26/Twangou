@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:twangou/initialize users/sign_up_page.dart';
 import 'package:twangou/initialize users/sign_in_page.dart';
 
+import '../main.dart';
+
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
 
@@ -14,8 +16,6 @@ class WelcomeScreen extends StatefulWidget {
 
 class WelcomeScreenState extends State<WelcomeScreen>
     with TickerProviderStateMixin {
-  late double height;
-  late double width;
 
   @override
   void initState() {
@@ -24,8 +24,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
     return Scaffold(
         body: Container(
             color: Color.fromRGBO(255, 255, 255, 100),

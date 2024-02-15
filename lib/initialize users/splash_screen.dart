@@ -4,21 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:twangou/main.dart';
 import 'package:twangou/initialize users/welcome_page.dart';
+import 'package:twangou/main%20pages/NavigationBarPage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => SplashScreenSate();
+  State<SplashScreen> createState() => SplashScreenState();
 }
 
-class SplashScreenSate extends State<SplashScreen> {
+class SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
     super.initState();
     Timer timer = Timer(Duration(seconds: 3), () {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
     });
   }
   @override

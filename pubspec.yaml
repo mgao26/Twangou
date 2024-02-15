@@ -38,6 +38,13 @@ dependencies:
   google_fonts: ^6.1.0
   animated_text_kit: ^4.2.2
   animated_background: ^2.0.0
+  auto_size_text: ^3.0.0
+  readmore: ^2.2.0
+  photo_view: ^0.14.0
+  cached_network_image: ^3.3.1
+  sqflite: ^2.3.0
+  http: ^1.1.0
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
