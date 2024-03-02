@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:twangou/initialize%20users/splash_screen.dart';
+import 'package:twangou/util%20classes/Gohu.dart';
 
 late double height;
 late double width;
 late double widget_spacing;
+List<Gohu> gohus = [];
 
 void main() {
   runApp(const MyApp());

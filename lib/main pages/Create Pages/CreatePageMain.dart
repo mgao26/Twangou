@@ -2,6 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:twangou/main%20pages/Create%20Pages/Create%20Gohu%20Pages/GohuTitles.dart';
 
+import '../../main.dart';
+import '../../util classes/Gohu.dart';
+
 class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
 
@@ -67,7 +70,7 @@ class CreatePageState extends State<CreatePage> {
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: 3,
+                          itemCount: gohus.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               children: [
@@ -76,40 +79,38 @@ class CreatePageState extends State<CreatePage> {
                                   MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
-                                      children: [
+                                        children: [
                                         Container(
                                           decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
                                               border: Border.all(
                                                   width: 5,
                                                   color: Colors.black)),
-                                          padding:
-                                          EdgeInsets.only(top: height / 60),
-                                          width: width / 4,
-                                          height: (width / 16) * 5,
+                                          width: width / 3,
+                                          height: width/3,
                                           child: ClipRRect(
                                             borderRadius:
-                                            BorderRadius.circular(12.0),
+                                            BorderRadius.circular(7.0),
                                             // Adjust the radius as needed
-                                            child: Image.asset(
-                                              'assets/saving.png',
-                                              fit: BoxFit.cover,
-                                            ),
+                                            child: Image.memory(gohus[index].coverImageBytes, fit: BoxFit.fill),
                                           ),
                                         ),
                                         SizedBox(width: width / 30),
                                         Container(
-                                          width: width / 2,
+                                          width: width / 5,
                                           height: (width / 48) * 5,
                                           child: AutoSizeText(
-                                            'Title',
+                                            gohus[index].title,
                                             style: TextStyle(fontSize: 50),
-                                            maxLines: 1,
+                                            maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    Text('Date'),
+                                    ]
+                                ),
+                                    TextButton(onPressed: () {
+                                      showGohuInfo(gohus[index], context);
+                                    }, child: Text('Info')),
                                   ],
                                 ),
                                 SizedBox(height: height / 40),
@@ -211,8 +212,12 @@ class CreatePageState extends State<CreatePage> {
                         backgroundColor: Colors.red
                             .withOpacity(0.75), // Set the opacity here
                       ),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => GohuTitles()));
+                      onPressed: () async{
+                        Gohu gohu = await Navigator.push(context, MaterialPageRoute(builder: (context) => GohuTitles()));
+                        gohus.add(gohu);
+                        saveGohus(gohus);
+                        setState(() {
+                        });
                       },
                       child: Text(
                         'Create New...',
