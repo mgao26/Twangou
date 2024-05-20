@@ -7,27 +7,47 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
+import 'Gohu.dart';
+
 class SocketUtil {
   late Socket socket;
   late Future<http.Response> response;
 
-  Future<String> sendMessage(String message) async {
-    print('connecting');
-    Socket socket = await Socket.connect('192.168.1.240', 8080);
-    print('connected');
-    String response = '';
-    // listen to the received data event stream
+  Future<String> sendMessage(String message, String route) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.1.240:5000$route'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Hi' : 'hello',
+      },
+      body: message,
+    );
+    String text = response.body;
+    return text;
+  }
 
-    // send hello
-    socket.add(utf8.encode(message));
-    socket.listen((List<int> event) {
-      //print(utf8.decode(event));
-      response = utf8.decode(event);
-    });
-    // wait 5 seconds
-    await Future.delayed(Duration(seconds: 3));
-    // .. and close the socket
-    socket.close();
-    return response;
+  Future<String> sendImage(Uint8List image, String route, int id) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.1.240:5000$route'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Id' : '$id',
+      },
+      body: image,
+    );
+    String text = response.body;
+    return text;
+  }
+
+  Future<String> sendMessageBytes(Uint8List message, String route) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.1.240:5000$route'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: message,
+    );
+    String text = response.body;
+    return text;
   }
 }

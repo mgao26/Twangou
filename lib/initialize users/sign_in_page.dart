@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:twangou/util%20classes/SocketUtil.dart';
 
 import '../main pages/NavigationBarPage.dart';
@@ -28,6 +29,11 @@ class SignInScreenState extends State<SignInScreen>
     credentialsError = '';
     userNameData = TextEditingController();
     passwordData = TextEditingController();
+  }
+
+  void saveId(int idNumber) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('idNumber', idNumber);
   }
 
   @override
@@ -138,12 +144,14 @@ class SignInScreenState extends State<SignInScreen>
                 child: TextButton(
                     onPressed: () async{
                       String message = 'SignIn|${userNameData.text}|${passwordData.text}';
-                      String response = await socketUtil.sendMessage(message);
+                      String response = await socketUtil.sendMessage(message, '/');
 
-                      if (response == 'Incorrect') {
+                      if (response == '-1') {
                         credentialsError = 'Invalid username or password.';
                         setState(() {});
                       } else {
+                        int idNumber = int.parse(response);
+                        saveId(idNumber);
                         credentialsError = '';
                         Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
                       }

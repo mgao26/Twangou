@@ -7,6 +7,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:twangou/util%20classes/SocketUtil.dart';
 
 import '../main.dart';
 
@@ -71,6 +72,7 @@ void showGohuInfo(Gohu gohu, BuildContext context) {
 Future<List<Gohu>> loadGohus() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<String>? jsonStrings = prefs.getStringList("Gohus");
+  print(jsonStrings![0]);
   List<Gohu> gohus = [];
   if (jsonStrings != null) {
     List jsonMapList = jsonStrings.map((jsonObject) =>
@@ -81,12 +83,46 @@ Future<List<Gohu>> loadGohus() async {
   return gohus;
 }
 
+Future<int> fetchId() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int idNumber =  prefs.getInt('idNumber') ?? 0;
+  return idNumber;
+}
+
+void sendGohu(Gohu gohu) async {
+
+  SocketUtil socketUtil = SocketUtil();
+  int idNumber = await fetchId();
+
+  String messageData = 'AddGohu|${gohu.title}|${gohu.description}|$idNumber';
+
+  int gohuId = int.parse(await socketUtil.sendMessage(messageData, '/AddGohu'));
+  print(gohuId);
+
+  /*for(int ii = 0; ii < gohu.products.length; ii++) {
+    concatenatedData = concatenateBytes(concatenatedData, Uint8List.fromList(utf8.encode("|${gohu.products[ii].name}|${gohu.products[ii].cost}|${gohu.products[ii].quantity}|")));
+    concatenatedData = concatenateBytes(concatenatedData, gohu.products[ii].imageBytes);
+  }*/
+  /*SocketUtil socketUtil = SocketUtil();
+  String generalGohuData = '${gohu.title}|${gohu.description}|${gohu.products.length}';
+  socketUtil.sendMessage(generalGohuData, '/AddGohu');
+
+  for(int ii = 0; ii < gohu.products.length; ii++) {
+    socketUtil.sendMessage("${gohu.products[ii].name}|${gohu.products[ii].cost}|${gohu.products[ii].quantity}", '/AddGohu');
+    socketUtil.sendMessageBytes(gohu.products[ii].imageBytes, '/AddGohu');
+  }
+
+  socketUtil.sendMessageBytes(gohu.coverImageBytes, '/AddGohu');*/
+
+}
+
 void saveGohus(List<Gohu> gohus) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   List jsonMapList = gohus.map((gohu) => gohu.toJson()).toList();
   List<String> gohuStringList = jsonMapList.map((jsonObject) => json.encode(jsonObject)).toList();
   prefs.setStringList("Gohus", gohuStringList);
 }
+
 
 class Gohu {
   String title;
@@ -98,7 +134,8 @@ class Gohu {
   Map<String, dynamic> toJson() => {
     'title': title,
     'description': description,
-    'products': products.map((product) => product.toJson()).toList(),
+    'products': products.map((product) =>
+        product.toJson()).toList(),
     'coverImageBytes': base64Encode(coverImageBytes),
   };
 

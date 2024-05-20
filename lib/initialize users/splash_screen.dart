@@ -7,6 +7,7 @@ import 'package:twangou/initialize users/welcome_page.dart';
 import 'package:twangou/main%20pages/NavigationBarPage.dart';
 
 import '../util classes/Gohu.dart';
+import '../util classes/SocketUtil.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,7 +23,9 @@ class SplashScreenState extends State<SplashScreen> {
     super.initState();
     loadGohus().then((value) {
       gohus = value;
-      Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
+      SocketUtil socketUtil = SocketUtil();
+      //socketUtil.sendMessage('', '/');
+      Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
     });
   }
   @override

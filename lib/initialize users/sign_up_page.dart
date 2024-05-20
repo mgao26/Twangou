@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:twangou/util%20classes/SocketUtil.dart';
 import 'package:twangou/main%20pages/NavigationBarPage.dart';
+import 'package:twangou/initialize%20users/sign_in_page.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -32,6 +34,11 @@ class SignUpScreenState extends State<SignUpScreen>
     passwordError = '';
     userNameData = TextEditingController();
     passwordData = TextEditingController();
+  }
+
+  void saveId(int idNumber) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('idNumber', idNumber);
   }
 
   @override
@@ -201,13 +208,17 @@ class SignUpScreenState extends State<SignUpScreen>
                       });
                       if (userNameValidator && passwordValidator) {
                         String message = 'SignUp|${userNameData.text}|${passwordData.text}';
-                        String response = await socketutil.sendMessage(message);
-                        if (response == 'Unavailable') {
+                        String response = await socketutil.sendMessage(message, '/');
+                        List<String> responseParts = response.split('|');
+                        if (responseParts[0] == 'Available') {
+                          userNameError = '';
+                          int idNumber = int.parse(responseParts[1]);
+                          print(idNumber);
+                          saveId(idNumber);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
+                        } else {
                           userNameError = 'Username is taken.';
                           setState(() {});
-                        } else {
-                          userNameError = '';
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
                         }
                       }
                       /*Navigator.push(

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:twangou/main%20pages/Create%20Pages/Create%20Gohu%20Pages/GohuTitles.dart';
+import 'package:twangou/util%20classes/SocketUtil.dart';
 
 import '../../main.dart';
 import '../../util classes/Gohu.dart';
@@ -17,6 +20,8 @@ class CreatePageState extends State<CreatePage> {
   late double width;
   bool isHostingExpanded = false;
   bool isCompletedExpanded = false;
+
+  SocketUtil socketUtil = SocketUtil();
 
   @override
   void initState() {
@@ -214,8 +219,12 @@ class CreatePageState extends State<CreatePage> {
                       ),
                       onPressed: () async{
                         Gohu gohu = await Navigator.push(context, MaterialPageRoute(builder: (context) => GohuTitles()));
-                        gohus.add(gohu);
-                        saveGohus(gohus);
+                        //gohus.add(gohu);
+                        sendGohu(gohu);
+                        //String jsonObject = json.encode(gohu.toJson());
+                        //String message = 'AddGohu|$jsonObject';
+                        //String response = await socketUtil.sendMessage(message);
+                        //saveGohus(gohus);
                         setState(() {
                         });
                       },
