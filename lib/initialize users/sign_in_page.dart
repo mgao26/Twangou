@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:twangou/initialize%20users/splash_screen.dart';
 import 'package:twangou/util%20classes/SocketUtil.dart';
 
 import '../main pages/NavigationBarPage.dart';
+import '../main.dart';
+import '../util classes/Gohu.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -34,6 +37,11 @@ class SignInScreenState extends State<SignInScreen>
   void saveId(int idNumber) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('idNumber', idNumber);
+  }
+  void saveCredentials(String userName, String password) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('username', userName);
+    prefs.setString('password', password);
   }
 
   @override
@@ -145,15 +153,23 @@ class SignInScreenState extends State<SignInScreen>
                     onPressed: () async{
                       String message = 'SignIn|${userNameData.text}|${passwordData.text}';
                       String response = await socketUtil.sendMessage(message, '/');
-
+                      print(response);
                       if (response == '-1') {
                         credentialsError = 'Invalid username or password.';
                         setState(() {});
                       } else {
                         int idNumber = int.parse(response);
                         saveId(idNumber);
+                        saveCredentials(userNameData.text, passwordData.text);
                         credentialsError = '';
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SplashScreen()));
+                        /*loadGohus(idNumber).then((value) {
+                          gohus = value;
+                          print(gohus);
+                          SocketUtil socketUtil = SocketUtil();
+                          socketUtil.sendMessage('', '/');
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
+                        });*/
                       }
 
                       /*Navigator.push(

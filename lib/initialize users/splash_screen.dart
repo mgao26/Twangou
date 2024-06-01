@@ -21,11 +21,18 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    loadGohus().then((value) {
-      gohus = value;
-      SocketUtil socketUtil = SocketUtil();
-      //socketUtil.sendMessage('', '/');
-      Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+    fetchId().then((id) {
+      if(id == 0) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+      } else {
+        loadGohus(id).then((value) {
+          gohus = value;
+          print(gohus);
+          SocketUtil socketUtil = SocketUtil();
+          socketUtil.sendMessage('', '/');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => NavigationBarPage()));
+        });
+      }
     });
   }
   @override
@@ -41,7 +48,9 @@ class SplashScreenState extends State<SplashScreen> {
           children: [
             Text('twangou', style: GoogleFonts.pacifico(color: Colors.yellow, fontSize: 50),),
             SizedBox(height:20),
-            Icon(Icons.card_giftcard, size: 100, color: Colors.yellow,)
+            Icon(Icons.card_giftcard, size: 100, color: Colors.yellow,),
+            SizedBox(height:height/3),
+            CircularProgressIndicator(),
           ],
         )
       )

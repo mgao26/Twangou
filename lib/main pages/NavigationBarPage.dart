@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:twangou/main%20pages/Create%20Pages/CreatePageMain.dart';
 import 'package:twangou/main%20pages/FeedPage.dart';
 
+import 'ProfilePage.dart';
+
 class NavigationBarPage extends StatefulWidget {
   @override
   NavigationBarPageState createState() => NavigationBarPageState();
@@ -17,7 +19,7 @@ class NavigationBarPageState extends State<NavigationBarPage> {
     ExploreScreen(),
     CreatePage(),
     NotificationsScreen(),
-    ProfileScreen(),
+    ProfilePage(),
   ];
 
   @override
@@ -80,15 +82,6 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text('Notifications Screen'),
-    );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Profile Screen'),
     );
   }
 }

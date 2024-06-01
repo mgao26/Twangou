@@ -19,7 +19,7 @@ class GohuTitlesState extends State<GohuTitles> {
   late double height;
   late double width;
   Uint8List imageBytes = Uint8List(0);
-  Gohu gohu = Gohu('', '', [], Uint8List(0));
+  Gohu gohu = Gohu('', '', [], Uint8List(0), 0);
   TextEditingController titleData = TextEditingController();
   TextEditingController descriptionData = TextEditingController();
   final _formKey = GlobalKey<FormState>();
